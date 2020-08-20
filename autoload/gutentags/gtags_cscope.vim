@@ -90,6 +90,12 @@ function! gutentags#gtags_cscope#generate(proj_dir, tags_file, gen_opts) abort
     endif
     let l:cmd += ['--incremental', '"'.l:db_path.'"']
     let l:cmd = gutentags#make_args(l:cmd)
+    if filereadable(l:db_path . '/' . "GTAGS") && getfsize(l:db_path . '/' . "GTAGS") == 0
+        call gutentags#trace("GTAGS seems corupt, delete GRTAGS GPATH GTAGS in db_path" . l:db_path)
+        call delete(l:db_path . "/GTAGS")
+        call delete(l:db_path . "/GRTAGS")
+        call delete(l:db_path . "/GPATH")
+    endif
 
     call gutentags#trace("Running: " . string(l:cmd))
     call gutentags#trace("In:      " . getcwd())
